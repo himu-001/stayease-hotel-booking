@@ -8,12 +8,13 @@ import Login from "./Pages/Login";
 import About from "./Pages/About";
 import MyBookings from "./Pages/MyBookings";
 import Navbar from "./Components/Navbar";
+import Footer from "./Components/Footer.jsx";
 
 const App = () => {
   const ownerPath = useLocation().pathname.includes("owner");
 
   return (
-    <div className="App">
+    <div className="w-full mx-auto">
       {!ownerPath && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/my-bookings" element={<MyBookings />} />
       </Routes>
+      {!ownerPath && <Footer />}
     </div>
   );
 };
