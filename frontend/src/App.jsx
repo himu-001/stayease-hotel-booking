@@ -9,6 +9,7 @@ import About from "./Pages/About";
 import MyBookings from "./Pages/MyBookings";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer.jsx";
+import { Toaster } from "react-hot-toast";
 
 const App = () => {
   const ownerPath = useLocation().pathname.includes("owner");
@@ -16,6 +17,7 @@ const App = () => {
   return (
     <div className="w-full mx-auto">
       {!ownerPath && <Navbar />}
+      <Toaster />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hotels" element={<Hotels />} />

@@ -48,12 +48,12 @@ export const cities = [
   "Chennai",
   "Kolkata",
   "Hyderabad",
-  "Lahore",
-  "Karachi",
-  "Murree",
+  "Manali",
+  "Nainital",
+  "Shimla",
   "Nashik",
   "Pune",
-  "Islamabad",
+  "Bangalore",
 ];
 export const homePageData = [
   {

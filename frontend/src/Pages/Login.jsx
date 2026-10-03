@@ -1,9 +1,13 @@
 
-import React from "react";
+import React, { useContext } from "react";
 import { Mail, Lock } from "lucide-react";
 import { Link } from "react-router-dom";
+import { AppContext } from "../Context/AppContext";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
+
+    const { setUser, navigate } = useContext(AppContext);
 
     const [formData, setFormData] = React.useState({
         email: "",
@@ -12,8 +16,10 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         console.log(formData);
+        toast.success("login successful")
+        setUser(true);
+        navigate("/")
     };
 
     const handleChange = (e) => {
