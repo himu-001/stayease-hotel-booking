@@ -101,12 +101,6 @@ const SingleRoom = () => {
                   <User className="w-4 h-4" />
                   <span>{room.hotel.ownerName}</span>
                 </div>
-              </div>
-              <div className="text-gray-600">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span>{room.hotel.ownerName}</span>
-                </div>
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4" />
                   <span>{room.hotel.contactNumber}</span>
