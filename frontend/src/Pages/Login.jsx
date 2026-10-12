@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 
 const Login = () => {
 
-    const { setUser, navigate } = useContext(AppContext);
+    const { setUser, navigate, setOwner } = useContext(AppContext);
 
     const [formData, setFormData] = React.useState({
         email: "",
@@ -16,10 +16,9 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData);
         toast.success("login successful")
-        setUser(true);
-        navigate("/")
+        setOwner(true);
+        navigate("/owner")
     };
 
     const handleChange = (e) => {
