@@ -41,7 +41,7 @@ const App = () => {
         <Route path="/owner" element={owner ? <OwnerLayout /> : <Login />}>
           <Route index element={owner ? <AllHotels /> : <Login />} />
           <Route
-            path="register-hotels"
+            path="register-hotel"
             element={owner ? <RegisterHotel /> : <Login />}
           />
           <Route path="rooms" element={owner ? <AllRooms /> : <Login />} />
