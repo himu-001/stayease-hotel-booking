@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/connectDB.js";
+import userRouter from "./routes/user.routes.js";
 
 dotenv.config();
 dns.setServers(["1.1.1.1", "1.0.0.1"]);
@@ -24,6 +25,8 @@ app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("Hello World From Server");
 });
+
+app.use("/api/users", userRouter);
 
 const PORT = process.env.PORT || 5000;
 
