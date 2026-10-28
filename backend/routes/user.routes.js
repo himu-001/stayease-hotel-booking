@@ -9,6 +9,7 @@ userRouter.route("/signup").post(signUp);
 userRouter.route("/login").post(signIn);
 
 // Protected route — authentication required
+userRouter.route("/is-auth").get(isAuthenticated, logout);
 userRouter.route("/logout").post(verifyJWT, logout);
 
 export default userRouter;

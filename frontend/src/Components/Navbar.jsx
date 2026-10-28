@@ -2,11 +2,11 @@ import React,  { useContext } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets.js";
 import { AppContext } from "../Context/AppContext.jsx";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 const Navbar = () => {
 
-    const { navigate, user, setUser } = React.useContext(AppContext);
+    const { navigate, user, setUser, setOwner, axios } = React.useContext(AppContext);
 
     const navLinks = [
         { name: "Home", path: "/" },
@@ -18,8 +18,19 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
     const logout = () => {
-        setUser(false);
-        toast.success("Logout successful");
+        try { 
+            const { data } = axios.get("/api/users/logout");
+            if (data.success) {
+                toast.success(data.message);
+                setUser(false);
+                navigate("/");
+            } else {
+                toast.error(data.message);
+            }
+        }
+        catch (error) {
+            toast.error(error.response.data.message);
+        }
         setIsMenuOpen(false);
     };
 
@@ -50,9 +61,7 @@ const Navbar = () => {
                     </Link>
                 ))}
 
-                <button className="border border-white text-white px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-                    Owner
-                </button>
+                
             </div>
 
             {/* Desktop Right */}
@@ -168,9 +177,7 @@ const Navbar = () => {
                 ))}
 
                 {/* Owner Button */}
-                <button className="border px-4 py-1 text-sm font-light rounded-full cursor-pointer transition-all">
-                    Owner
-                </button>
+                
 
                 {/* Mobile User Section */}
                 {user ? (

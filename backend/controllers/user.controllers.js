@@ -112,8 +112,22 @@ const logout = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "User signed out successfully"));
 });
 
+// isAuthenticated function to check if the user is authenticated
+const isAuthenticated = asyncHandler(async (req, res) => { 
+    
+    const { id } = req.user;
+    const user = await User.findById(id).select("-password -refreshToken");
+    try { 
+        res.status(200).json(new ApiResponse(200, { user: req.user, success: true }, "User is authenticated"));
+    }
+    catch (error) {
+        throw new ApiError(500, "Failed to check authentication");
+    }
+});
+
 export {
     signUp,
     signIn,
-    logout
+    logout,
+    isAuthenticated,
 };
