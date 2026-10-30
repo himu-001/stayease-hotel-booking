@@ -25,20 +25,20 @@ const registerHotel = asyncHandler(async (req, res) => {
         owner: id,
     }); 
     await newHotel.save();
-    return res.status(201).json(apiResponse(true, "Hotel registered successfully", null));
+    return res.status(201).json(new apiResponse(true, "Hotel registered successfully", null));
     
 });
 
 const getOwnerHotels = asyncHandler(async (req, res) => {
     const { id } = req.user;
     const hotels = await Hotel.find({ owner: id }).populate("owner", "name email");
-    return res.status(200).json(apiResponse(true, "Hotels fetched successfully", hotels));
+    return res.status(200).json(new apiResponse(true, "Hotels fetched successfully", hotels));
 });
 
 // get all hotels
 const getAllHotels = asyncHandler(async (req, res) => { 
     const hotels = await Hotel.find().populate("owner", "name email");
-    return res.status(200).json(apiResponse(true, "Hotels fetched successfully", hotels));
+    return res.status(200).json(new apiResponse(true, "Hotels fetched successfully", hotels));
 });
 
 // delete hotel 
@@ -48,7 +48,7 @@ const deleteHotel = asyncHandler(async (req, res) => {
     if (!deletedHotel) {
         return apiError(res, 404, "Hotel not found");
     }
-    return res.status(200).json(apiResponse(true, "Hotel deleted successfully", null));
+    return res.status(200).json(new apiResponse(true, "Hotel deleted successfully", null));
 });
 
 export { registerHotel, getOwnerHotels, getAllHotels, deleteHotel };

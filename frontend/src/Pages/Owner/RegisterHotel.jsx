@@ -1,6 +1,12 @@
+import { useContext } from "react";
 import { useState } from "react";
+import { AppContext } from "../../Context/AppContext";
+import { toast } from "react-hot-toast";
 
 const RegisterHotel = () => {
+
+  const { axios, navigate } = useContext(AppContext);
+
   const [data, setData] = useState({
     hotelName: "",
     hotelAddress: "",
@@ -41,6 +47,20 @@ const RegisterHotel = () => {
     formData.append("image", file);
 
     console.log(data);
+
+    try {
+      const { data } = await axios.post("/api/hotel/register", formData);
+      
+      if (data.success) {
+        toast.success(data.message);
+        navigate("/owner");
+      }
+      else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
     
   }
 

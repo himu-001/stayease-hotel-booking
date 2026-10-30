@@ -4,6 +4,7 @@ import { hotelsData, roomsData } from "../assets/assets";
 import axios from "axios";
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
+import { toast } from "react-hot-toast";
 
 export const AppContext = createContext();
 
@@ -27,12 +28,32 @@ const AppContextProvider = ({children}) => {
         }
     }
 
-    const fetchHotelsData = () => {
-        setHotelData(hotelsData)
+    const fetchHotelsData = async() => {
+        try {
+      const { data } = await axios.get("/api/hotel/get-all");
+      if (data.success) {
+        setHotelData(data.hotels);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+        toast.error(error.message);
+    }
     }
 
-    const fetchRoomsData = () => {
-        setRoomData(roomsData)
+    const fetchRoomsData = async() => {
+        try {
+            const { data } = await axios.get("/api/room/get-all");
+            if (data.success) {
+                toast.success(data.message);
+                setRoomData(data.rooms);
+            }
+            else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+        }
     }
 
     useEffect(() => {

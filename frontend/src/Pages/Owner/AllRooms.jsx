@@ -1,14 +1,46 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../../Context/AppContext";
 import { motion } from "motion/react";
 import { MapPin, Star, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
 
 const AllRooms = () => {
-  const { roomData, navigate } = useContext(AppContext);
+  const { navigate, axios } = useContext(AppContext);
 
-  const handleDelete = (hotel) => {
-    console.log("Delete hotel:", hotel._id ?? hotel.id);
+  const [roomData, setRoomData] = useState([]);
+
+  const fetchOwnerRooms = async () => {
+    try {
+      const { data } = await axios.get("/api/room/get");
+      if (data.success) {
+        toast.success(data.message);
+        setRoomData(data.rooms);
+      }
+      else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
+
+  useEffect(() => {
+    fetchOwnerRooms();
+  }, []);
+
+  const deleteRoom = async (id) => {
+    try {
+      const { data } = await axios.delete(`/api/room/delete/${id}`);
+      if (data.success) {
+        toast.success(data.message);
+        fetchOwnerRooms();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+        toast.error(error.message);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 w-full">
@@ -74,13 +106,13 @@ const AllRooms = () => {
                     <td className="py-6 px-6">
                       <div className="flex items-center space-x-4">
                         <img
-                          src={room.images[0]}
+                          src={`http://localhost:3000/images/${room.imgages[0]}`}
                           alt={room.roomType || "Room"}
                           className="w-20 h-16 rounded-xl object-cover shadow-md"
                         />
                         <div>
                           <h3 className="text-lg font-semibold text-gray-800">
-                            {room.hotel.name}
+                            {room.hotel.hotelName}
                           </h3>
                         </div>
                       </div>
@@ -96,7 +128,7 @@ const AllRooms = () => {
                     </td>
 
                     <td className="py-6 px-6 text-gray-600 text-sm">
-                      {room.hotel.address || "N/A"}
+                      {room.hotel.hotelAddress || "N/A"}
                     </td>
 
                     <td className="py-6 px-6 text-gray-600 text-sm">
@@ -115,6 +147,7 @@ const AllRooms = () => {
                     <td className="py-6 px-6">
                       <div className="flex flex-wrap gap-1 min-w-36">
                         {(room.amenities ?? [])
+                          .split(",")
                           .map((amenity, i) => (
                             <span
                               key={`${amenity}-${i}`}
@@ -134,7 +167,7 @@ const AllRooms = () => {
                     <td className="py-6 px-6">
                       <button
                         type="button"
-                        onClick={() => handleDelete(room)}
+                        onClick={() => deleteRoom(room._id)}
                         className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full cursor-pointer transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />

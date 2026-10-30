@@ -1,7 +1,11 @@
-import { useState } from "react";
-import { hotelsData } from "../../assets/assets";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../Context/AppContext.jsx";
+import { toast } from "react-hot-toast";
 
 const AddRoom = () => {
+
+  const { axios, navigate } = useContext(AppContext);
+
   const [roomData, setRoomData] = useState({
     hotel: "",
     roomType: "",
@@ -29,8 +33,55 @@ const AddRoom = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(roomData);
+    const formData = new FormData();
+
+    formData.append("hotel", roomData.hotel);
+    formData.append("roomType", roomData.roomType);
+    formData.append("pricePerNight", roomData.pricePerNight);
+    formData.append("description", roomData.description);
+    formData.append("isAvailable", roomData.isAvailable);
+    formData.append("amenities", roomData.amenities);
+
+    for (let i = 0; i < roomData.images.length; i++) {
+      formData.append("images", roomData.images[i]);
+    }
+
+    try {
+      const { data } = await axios.post("/api/room/add", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      });
+
+      if (data.success) {
+        toast.success(data.message);
+        navigate("/owner/rooms ")
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+        toast.error(error.message);
+    }
   };
+
+    const [hotelData, setHotelData] = useState([]);
+
+  const fetchOwnerHotels = async () => { 
+    try {
+      const { data } = await axios.get("/api/hotel/get");
+      if (data.success) {
+        setHotelData(data.hotels);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+        toast.error(error.message);
+    }
+  }
+
+    useEffect(() => {
+      fetchOwnerHotels();
+    }, []);
 
   return (
     <div className="py-10 flex flex-col justify-between bg-white">
@@ -157,8 +208,8 @@ const AddRoom = () => {
             className="outline-none md:py-2.5 py-2 px-3 rounded border border-gray-500/40"
           >
             <option value="">Select Hotel</option>
-            {hotelsData.map((item) => (
-              <option key={item._id} value={item.id}>{item.name}</option>
+            {hotelData.map((item) => (
+              <option key={item._id} value={item._id}>{item.hotelName}</option>
             ))}
           </select>
         </div>

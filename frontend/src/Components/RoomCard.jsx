@@ -18,7 +18,7 @@ const RoomCard = ({ room }) => {
                 <div className='rounded-xl shadow-xl overflow-hidden transition-transform duration-200 max-w-80 bg-white px-3 md:px-5'>
 
                     <img
-                        src={room.images[0]}
+                        src={`http://localhost:3000/images/${room.image[0]}`}
                         alt=""
                         className='w-full h-52 object-cover'
                     />

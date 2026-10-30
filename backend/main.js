@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import connectDB from "./config/connectDB.js";
 import userRouter from "./routes/user.routes.js";
+import hotelRouter from "./routes/hotel.routes.js";
+import roomRouter from "./routes/room.routes.js";
 
 dotenv.config();
 dns.setServers(["1.1.1.1", "1.0.0.1"]);
@@ -26,7 +28,10 @@ app.get("/", (req, res) => {
   res.send("Hello World From Server");
 });
 
+app.use("/images", express.static("uploads"));
 app.use("/api/users", userRouter);
+app.use("/api/hotel", hotelRouter);
+app.use("/api/room", roomRouter);
 
 const PORT = process.env.PORT || 5000;
 

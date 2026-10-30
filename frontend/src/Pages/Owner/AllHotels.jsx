@@ -2,13 +2,45 @@ import { useContext } from "react";
 import { AppContext } from "../../Context/AppContext";
 import { motion } from "motion/react";
 import { MapPin, Star, Trash2 } from "lucide-react";
+import toast from "react-hot-toast";
+import { useEffect } from "react";
 
 const AllHotels = () => {
-  const { hotelData, navigate } = useContext(AppContext);
+  const { navigate, axios } = useContext(AppContext);
 
-  const handleDelete = (hotel) => {
-    console.log("Delete hotel:", hotel._id ?? hotel.id);
-  };
+  const [hotelData, setHotelData] = useState([]);
+
+  const fetchOwnerHotels = async () => { 
+    try {
+      const { data } = await axios.get("/api/hotel/get");
+      if (data.success) {
+        setHotelData(data.hotels);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+        toast.error(error.message);
+    }
+  }
+
+  useEffect(() => {
+    fetchOwnerHotels();
+  }, []);
+
+  const deleteHotel = async (id) => {
+    try {
+      const { data } = await axios.delete(`/api/hotel/delete/${id}`);
+
+      if (data.success) {
+        toast.success(data.message);
+        fetchOwnerHotels();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+        toast.error(error.message);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6 w-full">
@@ -79,12 +111,12 @@ const AllHotels = () => {
                     <td className="py-6 px-6">
                       <div className="flex items-center space-x-4">
                         <img
-                          src={hotel.image}
-                          alt={hotel.name || "Hotel"}
+                          src={`http://localhost:3000/images/${hotel.image}`}
+                          alt={hotel.hotelName || "Hotel"}
                           className="w-20 h-16 rounded-xl object-cover shadow-md"
                         />
                         <h3 className="text-lg font-semibold text-gray-800">
-                          {hotel.name}
+                          {hotel.hotelName}
                         </h3>
                       </div>
                     </td>
@@ -93,17 +125,17 @@ const AllHotels = () => {
                       <div className="flex items-start gap-2">
                         <MapPin className="w-4 h-4 text-gray-400 mt-1 shrink-0" />
                         <span className="text-gray-600 text-sm">
-                          {hotel.address || "N/A"}
+                          {hotel.hotelAddress || "N/A"}
                         </span>
                       </div>
                     </td>
 
                     <td className="py-6 px-6 text-gray-600 text-sm">
-                      {hotel.ownerName || "N/A"}
+                      {hotel.owner.name || "N/A"}
                     </td>
 
                     <td className="py-6 px-6 text-gray-600 text-sm">
-                      {hotel.contactNumber || "N/A"}
+                      {hotel.owner.contactNumber || "+91 9234567890"}
                     </td>
 
                     <td className="py-6 px-6">
@@ -122,7 +154,7 @@ const AllHotels = () => {
                     <td className="py-6 px-6">
                       <div className="flex flex-wrap gap-1 min-w-36">
                         {(hotel.amenities ?? [])
-                          .slice(0, 3)
+                          .split(",")
                           .map((amenity, i) => (
                             <span
                               key={`${amenity}-${i}`}
@@ -142,7 +174,7 @@ const AllHotels = () => {
                     <td className="py-6 px-6">
                       <button
                         type="button"
-                        onClick={() => handleDelete(hotel)}
+                        onClick={() => deleteHotel(hotel._id)}
                         className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-full cursor-pointer transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
